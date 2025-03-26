@@ -17,8 +17,8 @@ class TestLoginCourier:
             "password": create_and_delete_courier["password"]
         }
 
-
-        response = requests.post(LOGIN_COURIER_URL, data=success_data)
+        with allure.step(f"Отправка POST-запроса на авторизацию с данными: {success_data}"):
+            response = requests.post(LOGIN_COURIER_URL, data=success_data)
 
         assert response.status_code == 200, f"Ошибка: {response.text}"
         assert "id" in response.json()
@@ -31,7 +31,9 @@ class TestLoginCourier:
             "login": create_and_delete_courier["login"],
             "password": "asdgsdbr"
         }
-        response = requests.post(LOGIN_COURIER_URL, data=unsuccess_data)
+
+        with allure.step(f"Отправка POST-запроса с неверным паролем: {unsuccess_data}"):
+            response = requests.post(LOGIN_COURIER_URL, data=unsuccess_data)
 
         assert response.status_code == 404, f"Ошибка: {response.text}"
         assert response.json()["message"] == "Учетная запись не найдена"
@@ -41,7 +43,9 @@ class TestLoginCourier:
         unsuccess_data = {
             "password": create_and_delete_courier["login"],
         }
-        response = requests.post(LOGIN_COURIER_URL, data=unsuccess_data)
+
+        with allure.step(f"Отправка POST-запроса без логина: {unsuccess_data}"):
+            response = requests.post(LOGIN_COURIER_URL, data=unsuccess_data)
 
         assert response.status_code == 400, f"Ошибка: {response.text}"
         assert response.json()["message"] == "Недостаточно данных для входа"
@@ -52,7 +56,9 @@ class TestLoginCourier:
             "login": "asd",
             "password": create_and_delete_courier["password"]
         }
-        response = requests.post(LOGIN_COURIER_URL, data=unsuccess_data)
+
+        with allure.step(f"Отправка POST-запроса с несуществующим логином: {unsuccess_data}"):
+            response = requests.post(LOGIN_COURIER_URL, data=unsuccess_data)
 
         assert response.status_code == 404, f"Ошибка: {response.text}"
         assert response.json()["message"] == "Учетная запись не найдена"
